@@ -1,4 +1,15 @@
 # ASP.NET Core (.NET Framework)
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure subscription 1(2bb61b45-c7d6-4ff2-8e36-edb5557efeb4)'
+    appType: 'webAppLinux'
+    WebAppName: 'AENZ'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'Kghrestaurant_group'
+    SlotName: 'production'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    RuntimeStack: 'DOTNETCORE|7.0'
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
