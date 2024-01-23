@@ -1,0 +1,18 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: windows-latest
+
+trigger:
+- master
+
+variables:
+  BuildConfiguration: 'Release'
+  PushNupkg: 'True'
+  TeamName: 'Package Experience'
+
+steps:
+- template: build/build.yml
+  parameters:
+    nuspecProperties: 'VersionSuffix=CI-$(Build.BuildNumber)'
