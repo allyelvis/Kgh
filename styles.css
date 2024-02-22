@@ -24,3 +24,143 @@ h1 {
   flex-grow: 1;
   text-align: right;
 }
+	    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+ 
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ 
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+ 
+.channel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+ 
+.channel-item {
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+ 
+.channel-item:hover {
+    transform: scale(1.05);
+}
+ 
+.channel-item img {
+    max-width: 100%;
+    max-height: 100%;
+}
+ 
+.modal-dialog {
+    max-width: 800px;
+}
+ 
+.modal-content {
+    background-color: #f5f5f5;
+}
+ 
+.modal-header {
+    border-bottom: none;
+}
+ 
+.modal-body {
+    padding: 0;
+}
+ 
+.modal-body img {
+    max-width: 100%;
+    max-height: 100%;
+}
+ 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+ 
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ 
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+ 
+.channel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+ 
+.channel-item {
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+ 
+.channel-item:hover {
+    transform: scale(1.05);
+}
+ 
+.channel-item img {
+    max-width: 100%;
+    max-height: 100%;
+}
+ 
+.modal-dialog {
+    max-width: 800px;
+}
+ 
+.modal-content {
+    background-color: #f5f5f5;
+}
+ 
+.modal-header {
+    border-bottom: none;
+}
+ 
+.modal-body {
+    padding: 0;
+}
+ 
+.modal-body img {
+    max-width: 100%;
+    max-height: 100%;
+}
