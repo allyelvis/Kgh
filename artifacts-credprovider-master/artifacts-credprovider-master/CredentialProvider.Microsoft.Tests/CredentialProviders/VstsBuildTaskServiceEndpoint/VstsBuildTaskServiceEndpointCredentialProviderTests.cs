@@ -2,14 +2,7 @@
 //
 // Licensed under the MIT license.
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using CredentialProvider.Microsoft.Tests.CredentialProviders.Vsts;
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using NuGet.Protocol.Plugins;
 using NuGetCredentialProvider.CredentialProviders.VstsBuildTaskServiceEndpoint;
 using NuGetCredentialProvider.Logging;
 using NuGetCredentialProvider.Util;
@@ -24,7 +17,7 @@ namespace CredentialProvider.Microsoft.Tests.CredentialProviders.VstsBuildTaskSe
         private Mock<ILogger> mockLogger;
 
         private VstsBuildTaskServiceEndpointCredentialProvider vstsCredentialProvider;
-        
+
         private IDisposable environmentLock;
 
         [TestInitialize]
@@ -112,7 +105,7 @@ namespace CredentialProvider.Microsoft.Tests.CredentialProviders.VstsBuildTaskSe
             string feedEndPointJson = "{\"endpointCredentials\":[{\"endpoint\":\"http://example.pkgs.vsts.me/_packaging/TestFeed/nuget/v3/index.json\", \"username\": \"testUser\", \"password\":\"testToken\"}]}";
 
             Environment.SetEnvironmentVariable(feedEndPointJsonEnvVar, feedEndPointJson);
-            
+
             var result = await vstsCredentialProvider.HandleRequestAsync(new GetAuthenticationCredentialsRequest(sourceUri, false, false, false), CancellationToken.None);
             Assert.AreEqual(result.ResponseCode, MessageResponseCode.Error);
         }

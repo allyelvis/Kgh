@@ -2,58 +2,55 @@
 //
 // Licensed under the MIT license.
 
-using System;
-using System.IO;
-
 namespace NuGetCredentialProvider.Util
 {
-	public class EncryptedFile
-	{
-		public static byte[] ReadFileBytes(string filePath, bool readUnencrypted = false)
-		{
-			try
-			{
-				return File.Exists(filePath) ? ProtectedData.Unprotect(File.ReadAllBytes(filePath), null, DataProtectionScope.CurrentUser) : null;
-			}
-			catch (NotSupportedException)
-			{
-				if (readUnencrypted)
-				{
-					return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
-				}
+    public class EncryptedFile
+    {
+        public static byte[] ReadFileBytes(string filePath, bool readUnencrypted = false)
+        {
+            try
+            {
+                return File.Exists(filePath) ? ProtectedData.Unprotect(File.ReadAllBytes(filePath), null, DataProtectionScope.CurrentUser) : null;
+            }
+            catch (NotSupportedException)
+            {
+                if (readUnencrypted)
+                {
+                    return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
+                }
 
-				throw;
-			}
-		}
+                throw;
+            }
+        }
 
-		public static void WriteFileBytes(string filePath, byte[] bytes, bool writeUnencrypted = false)
-		{
-			try
-			{
-				EnsureDirectoryExists(filePath);
+        public static void WriteFileBytes(string filePath, byte[] bytes, bool writeUnencrypted = false)
+        {
+            try
+            {
+                EnsureDirectoryExists(filePath);
 
-				File.WriteAllBytes(filePath, ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser));
-			}
-			catch (NotSupportedException)
-			{
-				if (writeUnencrypted)
-				{
-					File.WriteAllBytes(filePath, bytes);
-					return;
-				}
+                File.WriteAllBytes(filePath, ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser));
+            }
+            catch (NotSupportedException)
+            {
+                if (writeUnencrypted)
+                {
+                    File.WriteAllBytes(filePath, bytes);
+                    return;
+                }
 
-				throw;
-			}
-		}
+                throw;
+            }
+        }
 
-		private static void EnsureDirectoryExists(string filePath)
-		{
-			var directory = Path.GetDirectoryName(filePath);
+        private static void EnsureDirectoryExists(string filePath)
+        {
+            var directory = Path.GetDirectoryName(filePath);
 
-			if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-			{
-				Directory.CreateDirectory(directory);
-			}
-		}
-	}
+            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+    }
 }

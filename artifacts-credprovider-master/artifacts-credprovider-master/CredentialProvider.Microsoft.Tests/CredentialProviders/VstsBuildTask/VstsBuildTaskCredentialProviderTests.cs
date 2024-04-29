@@ -2,19 +2,13 @@
 //
 // Licensed under the MIT license.
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using CredentialProvider.Microsoft.Tests.CredentialProviders.Vsts;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using NuGet.Protocol.Plugins;
 using NuGetCredentialProvider.CredentialProviders.VstsBuildTask;
 using NuGetCredentialProvider.Logging;
 using NuGetCredentialProvider.Util;
 
 namespace CredentialProvider.Microsoft.Tests.CredentialProviders.VstsBuildTask
-{ 
+{
     [TestClass]
     public class VstsBuildTaskCredentialProviderTests
     {

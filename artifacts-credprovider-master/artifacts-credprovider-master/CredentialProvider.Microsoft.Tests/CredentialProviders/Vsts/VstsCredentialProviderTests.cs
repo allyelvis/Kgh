@@ -2,16 +2,7 @@
 //
 // Licensed under the MIT license.
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.Artifacts.Authentication;
-using Microsoft.Identity.Client;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using NuGet.Protocol.Plugins;
 using NuGetCredentialProvider.CredentialProviders.Vsts;
 using NuGetCredentialProvider.Logging;
 using NuGetCredentialProvider.Util;

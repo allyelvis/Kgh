@@ -2,11 +2,7 @@
 //
 // Licensed under the MIT license.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using NuGet.Common;
 using NuGetCredentialProvider.Logging;
-using System.IO;
 
 namespace CredentialProvider.Microsoft.Tests.Logging
 {
