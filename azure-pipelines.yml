@@ -1,4 +1,10 @@
 using System;
+- task: AzureAppServiceSettings@1
+  inputs:
+    azureSubscription: 'Azure subscription 1(2bb61b45-c7d6-4ff2-8e36-edb5557efeb4)'
+    appName: 'AENZ'
+    resourceGroupName: 'kghrestaurant_group'
+    slotName: 'buyenzi'
 using System.Collections.Generic;
 
 namespace RestaurantManagement

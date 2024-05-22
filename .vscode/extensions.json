@@ -6,6 +6,10 @@
         "feiskyer.chatgpt-copilot",
         "d-biehl.robotcode",
         "xuangeaha.chartjs",
-        "sixth.sixth"
+        "sixth.sixth",
+        "tizentvweb.tizentvwasm",
+        "adrianwilczynski.add-reference",
+        "doggy8088.netcore-extension-pack",
+        "blairleduc.net-core-starters-pack"
     ]
 }

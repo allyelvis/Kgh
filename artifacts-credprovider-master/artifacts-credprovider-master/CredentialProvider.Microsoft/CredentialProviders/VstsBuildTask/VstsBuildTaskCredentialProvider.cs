@@ -2,14 +2,65 @@
 //
 // Licensed under the MIT license.
 
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (net461)'
+Before:
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+After:
+using NuGet.Protocol.Plugins;
+using NuGetCredentialProvider.Logging;
+using System.Util;
+*/
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (netcoreapp3.1)'
+Before:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+After:
+using NuGet.Protocol.Plugins;
+using NuGetCredentialProvider.Logging;
+using System.Util;
+*/
+using NuGetCredentialProvider.Util;
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (net461)'
+Before:
+using NuGetCredentialProvider.Collections.Generic;
+After:
+using System;
+*/
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (netcoreapp3.1)'
+Before:
+using NuGetCredentialProvider.Collections.Generic;
+After:
+using System;
+*/
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (net461)'
+Before:
 using NuGet.Protocol.Plugins;
 using NuGetCredentialProvider.Logging;
 using NuGetCredentialProvider.Util;
+After:
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'CredentialProvider.Microsoft (netcoreapp3.1)'
+Before:
+using NuGet.Protocol.Plugins;
+using NuGetCredentialProvider.Logging;
+using NuGetCredentialProvider.Util;
+After:
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+*/
 using ILogger = NuGetCredentialProvider.Logging.ILogger;
 
 namespace NuGetCredentialProvider.CredentialProviders.VstsBuildTask
@@ -60,7 +111,7 @@ namespace NuGetCredentialProvider.CredentialProviders.VstsBuildTask
 
             string uriString = request.Uri.AbsoluteUri;
             string matchedPrefix = uriPrefixes.FirstOrDefault(prefix => uriString.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
-            Verbose(string.Format(Resources.BuildTaskMatchedPrefix, matchedPrefix != null  ? matchedPrefix : Resources.BuildTaskNoMatchingPrefixes));
+            Verbose(string.Format(Resources.BuildTaskMatchedPrefix, matchedPrefix != null ? matchedPrefix : Resources.BuildTaskNoMatchingPrefixes));
 
             if (matchedPrefix == null)
             {
