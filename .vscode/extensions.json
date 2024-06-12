@@ -10,6 +10,7 @@
         "tizentvweb.tizentvwasm",
         "adrianwilczynski.add-reference",
         "doggy8088.netcore-extension-pack",
-        "blairleduc.net-core-starters-pack"
+        "blairleduc.net-core-starters-pack",
+        "ms-toolsai.datawrangler"
     ]
 }
