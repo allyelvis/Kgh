@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\artifacts-credprovider-master",
+    "\\artifacts-credprovider-master\\artifacts-credprovider-master",
+    "\\artifacts-credprovider-master\\artifacts-credprovider-master\\CredentialProvider.Microsoft",
+    "\\artifacts-credprovider-master\\artifacts-credprovider-master\\src",
+    "\\artifacts-credprovider-master\\artifacts-credprovider-master\\src\\Authentication.Tests"
   ],
+  "SelectedNode": "\\artifacts-credprovider-master\\artifacts-credprovider-master\\MicrosoftCredentialProvider.sln",
   "PreviewInSolutionExplorer": false
 }
