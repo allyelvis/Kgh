@@ -4,7 +4,11 @@
     <output url="file://$MODULE_DIR$/out/production/Kgh" />
     <output-test url="file://$MODULE_DIR$/out/test/Kgh" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.idea/JetClient" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/codeStyles" />
+      <excludeFolder url="file://$MODULE_DIR$/docker/woocommerce-pos/vendor/ramsey/collection/bin" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
