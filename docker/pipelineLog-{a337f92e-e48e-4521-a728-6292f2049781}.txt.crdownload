@@ -1,0 +1,60 @@
++ umask 000
+
++ GIT_LFS_SKIP_SMUDGE=1 retry 6 git clone --branch="main" --depth 50 https://x-token-auth:$REPOSITORY_OAUTH_ACCESS_TOKEN@bitbucket.org/$BITBUCKET_REPO_FULL_NAME.git $BUILD_DIR
+Cloning into '/opt/atlassian/pipelines/agent/build'...
+
++ git reset --hard 24b249a6f441028e3d1a694575ab7e2d450c5352
+HEAD is now at 24b249a Initial Bitbucket Deployments configuration
+
++ git config user.name bitbucket-pipelines
+
++ git config user.email commits-noreply@bitbucket.org
+
++ git config push.default current
+
++ git config http.${BITBUCKET_GIT_HTTP_ORIGIN}.proxy http://localhost:29418/
+
++ git remote set-url origin http://bitbucket.org/$BITBUCKET_REPO_FULL_NAME
+
++ git reflog expire --expire=all --all
+
++ echo ".bitbucket/pipelines/generated" >> .git/info/exclude
+
++ chmod 777 $BUILD_DIR
+
+
+Default variables:
+    BITBUCKET_BRANCH
+    BITBUCKET_BUILD_NUMBER
+    BITBUCKET_CLONE_DIR
+    BITBUCKET_COMMIT
+    BITBUCKET_DEPLOYMENT_ENVIRONMENT
+    BITBUCKET_DEPLOYMENT_ENVIRONMENT_UUID
+    BITBUCKET_GIT_HTTP_ORIGIN
+    BITBUCKET_GIT_SSH_ORIGIN
+    BITBUCKET_PIPELINE_UUID
+    BITBUCKET_PROJECT_KEY
+    BITBUCKET_PROJECT_UUID
+    BITBUCKET_REPO_FULL_NAME
+    BITBUCKET_REPO_IS_PRIVATE
+    BITBUCKET_REPO_OWNER
+    BITBUCKET_REPO_OWNER_UUID
+    BITBUCKET_REPO_SLUG
+    BITBUCKET_REPO_UUID
+    BITBUCKET_SSH_KEY_FILE
+    BITBUCKET_STEP_RUN_NUMBER
+    BITBUCKET_STEP_TRIGGERER_UUID
+    BITBUCKET_STEP_UUID
+    BITBUCKET_WORKSPACE
+    CI
+    DOCKER_HOST
+    PIPELINES_JWT_TOKEN
+
+Images used:
+    build : docker.io/atlassian/default-image@sha256:c1940075e0f212ba459f6afa50743376a9dd0b57453fa4c46e89658a1ba31902
++ echo "Your deployment to production script goes here..."
+Your deployment to production script goes here...
+
+Searching for test report files in directories named [test-results, failsafe-reports, test-reports, TestResults, surefire-reports] down to a depth of 4
+Finished scanning for test reports. Found 0 test report files.
+Merged test suites, total number tests is 0, with 0 failures and 0 errors.

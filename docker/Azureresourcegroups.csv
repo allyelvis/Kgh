@@ -1,0 +1,11 @@
+﻿NAME,SUBSCRIPTION,LOCATION,
+"cloud-shell-storage-westeurope","Azure subscription 1","West Europe"
+"DefaultResourceGroup-CUS","Azure subscription 1","Central US"
+"DefaultResourceGroup-EUS","Azure subscription 1","East US"
+"DefaultResourceGroup-JNB","Azure subscription 1","South Africa North"
+"Kghrestaurant_group","Azure subscription 1","Central US"
+"MC_Kghrestaurant_group_Azurcont_southafricanorth","Azure subscription 1","South Africa North"
+"NetworkWatcherRG","Azure subscription 1","East US"
+"ResourceMoverRG-eastus-francecentral-frc","Azure subscription 1","France Central"
+"ResourceMoverRG-eastus-southafricanorth-sea","Azure subscription 1","Southeast Asia"
+"Vmgroup","Azure subscription 1","Central US"
