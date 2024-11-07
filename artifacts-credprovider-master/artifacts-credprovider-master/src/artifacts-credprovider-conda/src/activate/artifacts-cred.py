@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 
+import json
 import os
-import requests
 import subprocess
 import sys
 import warnings
-import json
-
 from subprocess import Popen
+
+import requests
 
 if not hasattr(Popen, "__enter__"):
     # Handle Python 2.x not making Popen a context manager
