@@ -19,6 +19,7 @@
         "reduckted.vscode-gitweblinks",
         "mtxr.sqltools-driver-mssql",
         "ms-azuretools.vscode-azurefunctions",
-        "ms-azuretools.vscode-azureappservice"
+        "ms-azuretools.vscode-azureappservice",
+        "aliasadidev.nugetpackagemanagergui"
     ]
 }
