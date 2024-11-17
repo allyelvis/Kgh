@@ -16,6 +16,9 @@
         "davidanson.vscode-markdownlint",
         "ms-vscode.azurecli",
         "ms-mssql.mssql",
-        "reduckted.vscode-gitweblinks"
+        "reduckted.vscode-gitweblinks",
+        "mtxr.sqltools-driver-mssql",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-azureappservice"
     ]
 }
