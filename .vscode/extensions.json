@@ -13,6 +13,9 @@
         "blairleduc.net-core-starters-pack",
         "ms-toolsai.datawrangler",
         "madeindjs.notable",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "ms-vscode.azurecli",
+        "ms-mssql.mssql",
+        "reduckted.vscode-gitweblinks"
     ]
 }
