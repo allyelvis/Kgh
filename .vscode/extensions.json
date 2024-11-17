@@ -11,6 +11,8 @@
         "adrianwilczynski.add-reference",
         "doggy8088.netcore-extension-pack",
         "blairleduc.net-core-starters-pack",
-        "ms-toolsai.datawrangler"
+        "ms-toolsai.datawrangler",
+        "madeindjs.notable",
+        "davidanson.vscode-markdownlint"
     ]
 }
