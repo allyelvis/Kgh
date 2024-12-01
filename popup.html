@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Restaurant POS</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tables Status</title>
+  <style>
+    /* Basic styling for table items */
+    .table-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .table-number {
+      font-weight: bold;
+    }
+    .table-status {
+      margin-left: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Restaurant POS</h1>
+  <div id="tables-container">
+    <!-- Table items will be dynamically added here -->
+  </div>
 
-  <div id="tables-container"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tablesContainer = document.getElementById('tables-container');
 
-  <script src="popup.js"></script>
+      // Load saved tables
+      chrome.storage.local.get('tables', (data) => {
+        const tables = data.tables || [];
+
+        tables.forEach((table) => {
+          const tableItem = document.createElement('div');
+          tableItem.classList.add('table-item');
+
+          const tableNumber = document.createElement('span');
+          tableNumber.textContent = `Table ${table.number}`;
+          tableNumber.classList.add('table-number');
+          tableItem.appendChild(tableNumber);
+
+          const tableStatus = document.createElement('span');
+          tableStatus.textContent = table.status;
+          tableStatus.classList.add('table-status');
+          tableItem.appendChild(tableStatus);
+
+          tablesContainer.appendChild(tableItem);
+        });
+      });
+    });
+  </script>
 </body>
 </html>

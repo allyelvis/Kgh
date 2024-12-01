@@ -2,9 +2,7 @@
 //
 // Licensed under the MIT license.
 
-using System.Linq;
 using Microsoft.Artifacts.Authentication;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGetCredentialProvider.Util;
 
 namespace CredentialProvider.Microsoft.Tests.Util;

@@ -1,0 +1,25 @@
+{
+  "name": "aenz",
+  "version": "1.0.0",
+  "description": "chrom web extension pos system integrating with pms and iptv system management with game platform",
+  "main": "background.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allyelvis/kgh.git"
+  },
+  "keywords": [
+    "aenz"
+  ],
+  "author": "Ally Elvis Nzeyimana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/allyelvis/kgh/issues"
+  },
+  "homepage": "https://github.com/allyelvis/kgh#readme"
+}

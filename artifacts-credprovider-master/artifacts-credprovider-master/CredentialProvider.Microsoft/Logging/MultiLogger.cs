@@ -44,36 +44,36 @@ namespace NuGetCredentialProvider.Logging
 
 namespace NuGetCredentialProvider.Logging
 {
-	internal class MultiLogger : List<ILogger>, ILogger
-	{
-		private LogLevel? minLogLevel = null;
+    internal class MultiLogger : List<ILogger>, ILogger
+    {
+        private LogLevel? minLogLevel = null;
 
-		public void Log(LogLevel level, bool allowOnConsole, string message)
-		{
-			foreach (var logger in this)
-			{
-				logger.Log(level, allowOnConsole, message);
-			}
-		}
+        public void Log(LogLevel level, bool allowOnConsole, string message)
+        {
+            foreach (var logger in this)
+            {
+                logger.Log(level, allowOnConsole, message);
+            }
+        }
 
-		public void SetLogLevel(LogLevel newLogLevel)
-		{
-			minLogLevel = newLogLevel;
+        public void SetLogLevel(LogLevel newLogLevel)
+        {
+            minLogLevel = newLogLevel;
 
-			foreach (var logger in this)
-			{
-				logger.SetLogLevel(newLogLevel);
-			}
-		}
+            foreach (var logger in this)
+            {
+                logger.SetLogLevel(newLogLevel);
+            }
+        }
 
-		public new void Add(ILogger logger)
-		{
-			if (minLogLevel.HasValue)
-			{
-				logger.SetLogLevel(minLogLevel.Value);
-			}
+        public new void Add(ILogger logger)
+        {
+            if (minLogLevel.HasValue)
+            {
+                logger.SetLogLevel(minLogLevel.Value);
+            }
 
-			base.Add(logger);
-		}
-	}
+            base.Add(logger);
+        }
+    }
 }

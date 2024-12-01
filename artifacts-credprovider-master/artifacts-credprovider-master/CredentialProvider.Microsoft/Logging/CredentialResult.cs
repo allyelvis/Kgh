@@ -1,18 +1,18 @@
 ﻿namespace NuGetCredentialProvider.Logging
 {
-	[DataContract]
-	public class CredentialResult
-	{
-		public CredentialResult(string username, string password)
-		{
-			Username = username;
-			Password = password;
-		}
+    [DataContract]
+    public class CredentialResult
+    {
+        public CredentialResult(string username, string password)
+        {
+            Username = username;
+            Password = password;
+        }
 
-		[DataMember]
-		public string Username { get; }
+        [DataMember]
+        public string Username { get; }
 
-		[DataMember]
-		public string Password { get; }
-	}
+        [DataMember]
+        public string Password { get; }
+    }
 }
