@@ -52,3 +52,6 @@ jobs:
 
       - name: Run tests
         run: npm test # Update this command based on your testing framework
+              - name: Generate Build Provenance
+                uses: AENZBi/generate-build-provenance@v1.0
+            
