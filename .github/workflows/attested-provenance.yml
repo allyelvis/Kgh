@@ -1,0 +1,42 @@
+name: Generate Build Provenance
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build-and-attest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js (example setup for Node projects)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build
+
+    - name: Generate provenance attestation
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: './dist' # Path to your built artifact directory
+        subject-name: 'my-artifact-name' # Optional: Name of the artifact
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify attestation (optional)
+      run: |
+        echo "Verifying attestation..."
+        # Add your verification steps here
