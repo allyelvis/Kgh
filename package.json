@@ -1,6 +1,6 @@
 {
   "name": "aenz",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "chrom web extension pos system integrating with pms and iptv system management with game platform",
   "main": "background.js",
   "directories": {
