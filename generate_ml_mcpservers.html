@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ML MCPServers Generator with package.json Parser</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+body{margin:0;padding:20px;background:#0f172a;color:#e6eef8;line-height:1.45}
+.card{background:#0b1220;border:1px solid #142033;padding:18px;border-radius:10px;max-width:980px;margin:18px auto;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+h1{margin:0 0 10px;font-size:20px}
+p{margin:8px 0;color:#d6e6fb}
+label{display:block;margin-top:12px;font-size:13px;color:#bcd7ff}
+textarea,input[type="text"],select{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #203449;background:#06101a;color:#dff;min-height:90px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button{background:#0ea5a6;color:#012018;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+button.ghost{background:transparent;border:1px solid #254552;color:#cfe9ee}
+pre{background:#021018;padding:10px;border-radius:8px;color:#bce;overflow:auto}
+footer{font-size:12px;color:#9fbdd2;margin-top:12px}
+.small{font-size:13px;color:#b8d7ff}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>ML MCPServers Generator + Auto Package Detection</h1>
+<p class="small">Now detects modules using README, repo file list, and package.json dependencies.</p>
+
+<label>GitHub repo (optional)</label>
+<div class="row">
+  <input id="ghRepo" type="text" placeholder="owner/repo (e.g. allyelvis/Kgh)" />
+  <button id="btnFetch">Fetch README & package.json</button>
+</div>
+
+<label>Upload README.md (optional)</label>
+<input id="fileReadme" type="file" accept=".md,.txt" />
+
+<label>Paste README text</label>
+<textarea id="txtReadme" placeholder="Paste README content here"></textarea>
+
+<label>Upload or paste package.json</label>
+<input id="filePackage" type="file" accept=".json" />
+<textarea id="txtPackage" placeholder="Paste package.json content here"></textarea>
+
+<label>Repo file list (optional)</label>
+<textarea id="txtFileList" placeholder="Paste `git ls-tree -r --name-only` output"></textarea>
+
+<div class="row" style="margin-top:12px">
+  <button id="btnGenerate">Generate Schema</button>
+  <button id="btnDownload" class="ghost" disabled>Download JSON</button>
+</div>
+
+<label>Output (ml_mcp_schema.json)</label>
+<pre id="out" style="min-height:220px">{}</pre>
+
+<footer>Made for allyelvis — now supports dependency intelligence.</footer>
+</div>
+
+<script>
+async function fetchFromGitHub(repo, file) {
+  const urls = [
+    `https://raw.githubusercontent.com/${repo}/main/${file}`,
+    `https://raw.githubusercontent.com/${repo}/master/${file}`
+  ];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return await res.text();
+    } catch {}
+  }
+  return '';
+}
+
+document.getElementById('btnFetch').onclick = async ()=>{
+  const repo = document.getElementById('ghRepo').value.trim();
+  if (!repo) return alert('Enter owner/repo');
+  const [readme, pkg] = await Promise.all([
+    fetchFromGitHub(repo, 'README.md'),
+    fetchFromGitHub(repo, 'package.json')
+  ]);
+  if (readme) document.getElementById('txtReadme').value = readme;
+  if (pkg) document.getElementById('txtPackage').value = pkg;
+  alert('Fetched data from GitHub.');
+};
+
+document.getElementById('fileReadme').onchange = async e=>{
+  const f=e.target.files[0];if(!f)return;document.getElementById('txtReadme').value=await f.text();
+};
+document.getElementById('filePackage').onchange = async e=>{
+  const f=e.target.files[0];if(!f)return;document.getElementById('txtPackage').value=await f.text();
+};
+
+function detectModules(readme, fileList, pkgJson){
+  const modules=new Set();
+  const text=((readme||'')+'\n'+(fileList||'')+'\n'+JSON.stringify(pkgJson||{})).toLowerCase();
+
+  const patterns=[
+    ['Hotel Management',/(hotel|room|reservation|guest|booking)/],
+    ['Restaurant POS',/(restaurant|menu|order|pos|kitchen|waiter)/],
+    ['Inventory',/(stock|inventory|warehouse|reorder)/],
+    ['Accounting',/(invoice|payment|account|billing|ledger)/],
+    ['CRM',/(customer|client|crm|lead|contact)/],
+    ['Fintech',/(wallet|bank|transfer|stripe|paypal|finance)/],
+    ['Analytics',/(analytics|report|insight|dashboard)/],
+    ['Media',/(media|iptv|stream|video|channel)/],
+    ['Auth',/(auth|login|jwt|session)/]
+  ];
+  for(const [name,re] of patterns) if(re.test(text)) modules.add(name);
+
+  if(pkgJson?.dependencies){
+    const deps=Object.keys(pkgJson.dependencies);
+    for(const dep of deps){
+      if(/react|vue|next|angular/.test(dep)) modules.add('Frontend');
+      if(/express|fastify|nestjs|koa/.test(dep)) modules.add('Backend API');
+      if(/sequelize|typeorm|mongoose|mysql|pg|sqlite/.test(dep)) modules.add('Database');
+      if(/firebase|supabase|aws|gcp/.test(dep)) modules.add('Cloud Integration');
+      if(/chart|plotly|d3|echarts/.test(dep)) modules.add('Analytics');
+    }
+  }
+  return Array.from(modules);
+}
+
+function makeSchema(modules){
+  const now=new Date().toISOString();
+  const base={
+    version:'1.1',
+    domain:'kgh.allyelvis',
+    modules:{},
+    generated_at:now
+  };
+  for(const m of modules){
+    base.modules[m]={entities:{Generic:{description:`Auto entity for ${m}`,fields:{
+      id:{type:'string',format:'uuid'},
+      name:{type:'string'},
+      created_at:{type:'string',format:'date-time'}
+    }}}};
+  }
+  return base;
+}
+
+document.getElementById('btnGenerate').onclick=()=>{
+  let pkg={};
+  try{pkg=JSON.parse(document.getElementById('txtPackage').value||'{}');}catch{}
+  const modules=detectModules(
+    document.getElementById('txtReadme').value,
+    document.getElementById('txtFileList').value,
+    pkg
+  );
+  const schema=makeSchema(modules.length?modules:['Core']);
+  document.getElementById('out').textContent=JSON.stringify(schema,null,2);
+  window.generatedSchema=schema;
+  document.getElementById('btnDownload').disabled=false;
+};
+
+document.getElementById('btnDownload').onclick=()=>{
+  const blob=new Blob([JSON.stringify(window.generatedSchema,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ml_mcp_schema.json';
+  a.click();
+};
+</script>
+</body>
+</html>
