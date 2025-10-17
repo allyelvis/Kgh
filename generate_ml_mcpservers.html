@@ -3,161 +3,509 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ML MCPServers Generator with package.json Parser</title>
+<title>ML MCPServers Schema Generator — KGH</title>
 <style>
-:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-body{margin:0;padding:20px;background:#0f172a;color:#e6eef8;line-height:1.45}
-.card{background:#0b1220;border:1px solid #142033;padding:18px;border-radius:10px;max-width:980px;margin:18px auto;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
-h1{margin:0 0 10px;font-size:20px}
-p{margin:8px 0;color:#d6e6fb}
-label{display:block;margin-top:12px;font-size:13px;color:#bcd7ff}
-textarea,input[type="text"],select{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #203449;background:#06101a;color:#dff;min-height:90px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-button{background:#0ea5a6;color:#012018;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
-button.ghost{background:transparent;border:1px solid #254552;color:#cfe9ee}
-pre{background:#021018;padding:10px;border-radius:8px;color:#bce;overflow:auto}
-footer{font-size:12px;color:#9fbdd2;margin-top:12px}
-.small{font-size:13px;color:#b8d7ff}
+  :root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  body{margin:0;padding:20px;background:#0f172a;color:#e6eef8;line-height:1.45}
+  .card{background:#0b1220;border:1px solid #142033;padding:18px;border-radius:10px;max-width:980px;margin:18px auto;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+  h1{margin:0 0 10px;font-size:20px}
+  p{margin:8px 0;color:#d6e6fb}
+  label{display:block;margin-top:12px;font-size:13px;color:#bcd7ff}
+  textarea,input[type="text"],select{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #203449;background:#06101a;color:#dff;min-height:90px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  button{background:#0ea5a6;color:#012018;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid #254552;color:#cfe9ee}
+  pre{background:#021018;padding:10px;border-radius:8px;color:#bce;overflow:auto}
+  footer{font-size:12px;color:#9fbdd2;margin-top:12px}
+  .small{font-size:13px;color:#b8d7ff}
+  .flex{display:flex;gap:8px;align-items:center}
+  .inline{display:inline-block}
 </style>
 </head>
 <body>
-<div class="card">
-<h1>ML MCPServers Generator + Auto Package Detection</h1>
-<p class="small">Now detects modules using README, repo file list, and package.json dependencies.</p>
+  <div class="card">
+    <h1>ML MCPServers Schema Generator — single file</h1>
+    <p class="small">Load a <code>README.md</code> (or paste it), optionally supply repo file list, then click <strong>Generate</strong> to produce <code>ml_mcp_schema.json</code>.</p>
 
-<label>GitHub repo (optional)</label>
-<div class="row">
-  <input id="ghRepo" type="text" placeholder="owner/repo (e.g. allyelvis/Kgh)" />
-  <button id="btnFetch">Fetch README & package.json</button>
-</div>
+    <label>1) Fetch README from public GitHub repo (optional)</label>
+    <div class="row">
+      <input id="ghRepo" type="text" placeholder="owner/repo (e.g. allyelvis/Kgh) or leave empty" />
+      <button id="btnFetch">Fetch README</button>
+    </div>
 
-<label>Upload README.md (optional)</label>
-<input id="fileReadme" type="file" accept=".md,.txt" />
+    <label>OR upload README.md</label>
+    <input id="fileReadme" type="file" accept=".md,.txt" />
 
-<label>Paste README text</label>
-<textarea id="txtReadme" placeholder="Paste README content here"></textarea>
+    <label>Paste README.md text (optional)</label>
+    <textarea id="txtReadme" placeholder="Or paste README.md contents here..."></textarea>
 
-<label>Upload or paste package.json</label>
-<input id="filePackage" type="file" accept=".json" />
-<textarea id="txtPackage" placeholder="Paste package.json content here"></textarea>
+    <label>Repo file list (optional)</label>
+    <textarea id="txtFileList" placeholder="Paste output of `git ls-tree -r --name-only` or drop a file list text file"></textarea>
+    <input id="fileList" type="file" accept=".txt" style="margin-top:8px" />
 
-<label>Repo file list (optional)</label>
-<textarea id="txtFileList" placeholder="Paste `git ls-tree -r --name-only` output"></textarea>
+    <div style="margin-top:12px" class="row">
+      <button id="btnGenerate">Generate ml_mcp_schema.json</button>
+      <button id="btnDownload" class="ghost" disabled>Download JSON</button>
+      <button id="btnCopy" class="ghost" disabled>Copy JSON</button>
+    </div>
 
-<div class="row" style="margin-top:12px">
-  <button id="btnGenerate">Generate Schema</button>
-  <button id="btnDownload" class="ghost" disabled>Download JSON</button>
-</div>
+    <label style="margin-top:14px">Advanced: Push to GitHub (optional)</label>
+    <p class="small">If you want the tool to push the generated file directly into a GitHub repo, provide a personal access token (repo scope). Use at your own risk — tokens are not persisted.</p>
+    <input id="ghToken" type="text" placeholder="GitHub Personal Access Token (optional)" />
+    <input id="ghTargetPath" type="text" placeholder="Target path in repo (default: ml_mcp_schema.json)" value="ml_mcp_schema.json" />
+    <div style="margin-top:8px" class="row">
+      <button id="btnPush" class="ghost">Push to GitHub (optional)</button>
+    </div>
 
-<label>Output (ml_mcp_schema.json)</label>
-<pre id="out" style="min-height:220px">{}</pre>
+    <hr style="border:none;border-top:1px solid #122436;margin:14px 0" />
 
-<footer>Made for allyelvis — now supports dependency intelligence.</footer>
-</div>
+    <label>Generated JSON Preview</label>
+    <pre id="out" style="min-height:220px">{}</pre>
+
+    <footer>Made for <strong>KGH / allyelvis</strong>. Open-source single-file tool — safe to run locally. </footer>
+  </div>
 
 <script>
-async function fetchFromGitHub(repo, file) {
-  const urls = [
-    `https://raw.githubusercontent.com/${repo}/main/${file}`,
-    `https://raw.githubusercontent.com/${repo}/master/${file}`
+/*
+  Single-file generator.
+  - Heuristics detect modules by keyword patterns in README + file list.
+  - Produces an mcpServers-style JSON following user's schema.
+  - Optional: pushes file to GitHub via REST API (requires token & repo).
+*/
+
+const btnFetch = document.getElementById('btnFetch');
+const ghRepo = document.getElementById('ghRepo');
+const fileReadme = document.getElementById('fileReadme');
+const txtReadme = document.getElementById('txtReadme');
+const txtFileList = document.getElementById('txtFileList');
+const fileList = document.getElementById('fileList');
+const btnGenerate = document.getElementById('btnGenerate');
+const out = document.getElementById('out');
+const btnDownload = document.getElementById('btnDownload');
+const btnCopy = document.getElementById('btnCopy');
+const ghToken = document.getElementById('ghToken');
+const btnPush = document.getElementById('btnPush');
+const ghTargetPath = document.getElementById('ghTargetPath');
+
+async function fetchReadmeFromGitHub(repo) {
+  // try raw readme: prefer README.md root
+  if (!repo || !repo.includes('/')) return '';
+  const candidates = [
+    `https://raw.githubusercontent.com/${repo}/main/README.md`,
+    `https://raw.githubusercontent.com/${repo}/master/README.md`,
+    `https://raw.githubusercontent.com/${repo}/main/Readme.md`,
+    `https://raw.githubusercontent.com/${repo}/main/README.MD`
   ];
-  for (const url of urls) {
+  for (const url of candidates) {
     try {
       const res = await fetch(url);
-      if (res.ok) return await res.text();
-    } catch {}
+      if (res.ok) {
+        const text = await res.text();
+        return text;
+      }
+    } catch(e){
+      // ignore
+    }
   }
+  // fallback: use GitHub API to get README content (may return Base64)
+  try {
+    const api = `https://api.github.com/repos/${repo}/readme`;
+    const r = await fetch(api, {headers:{Accept:'application/vnd.github.v3+json'}});
+    if (r.ok) {
+      const j = await r.json();
+      if (j && j.content) {
+        return atob(j.content.replace(/\n/g,''));
+      }
+    }
+  } catch(e){}
   return '';
 }
 
-document.getElementById('btnFetch').onclick = async ()=>{
-  const repo = document.getElementById('ghRepo').value.trim();
-  if (!repo) return alert('Enter owner/repo');
-  const [readme, pkg] = await Promise.all([
-    fetchFromGitHub(repo, 'README.md'),
-    fetchFromGitHub(repo, 'package.json')
-  ]);
-  if (readme) document.getElementById('txtReadme').value = readme;
-  if (pkg) document.getElementById('txtPackage').value = pkg;
-  alert('Fetched data from GitHub.');
-};
+btnFetch.addEventListener('click', async ()=>{
+  const repo = ghRepo.value.trim();
+  if (!repo) { alert('Enter owner/repo'); return; }
+  btnFetch.disabled = true;
+  btnFetch.textContent = 'Fetching...';
+  const md = await fetchReadmeFromGitHub(repo);
+  if (md) {
+    txtReadme.value = md;
+    alert('README fetched into the textarea.');
+  } else {
+    alert('Could not fetch README from repo (maybe private or missing). Paste README manually.');
+  }
+  btnFetch.disabled = false;
+  btnFetch.textContent = 'Fetch README';
+});
 
-document.getElementById('fileReadme').onchange = async e=>{
-  const f=e.target.files[0];if(!f)return;document.getElementById('txtReadme').value=await f.text();
-};
-document.getElementById('filePackage').onchange = async e=>{
-  const f=e.target.files[0];if(!f)return;document.getElementById('txtPackage').value=await f.text();
-};
+fileReadme.addEventListener('change', async (ev)=>{
+  const f = ev.target.files[0];
+  if (!f) return;
+  const txt = await f.text();
+  txtReadme.value = txt;
+});
 
-function detectModules(readme, fileList, pkgJson){
-  const modules=new Set();
-  const text=((readme||'')+'\n'+(fileList||'')+'\n'+JSON.stringify(pkgJson||{})).toLowerCase();
+fileList.addEventListener('change', async (ev)=>{
+  const f = ev.target.files[0];
+  if (!f) return;
+  const txt = await f.text();
+  txtFileList.value = txt;
+});
 
-  const patterns=[
-    ['Hotel Management',/(hotel|room|reservation|guest|booking)/],
-    ['Restaurant POS',/(restaurant|menu|order|pos|kitchen|waiter)/],
-    ['Inventory',/(stock|inventory|warehouse|reorder)/],
-    ['Accounting',/(invoice|payment|account|billing|ledger)/],
-    ['CRM',/(customer|client|crm|lead|contact)/],
-    ['Fintech',/(wallet|bank|transfer|stripe|paypal|finance)/],
-    ['Analytics',/(analytics|report|insight|dashboard)/],
-    ['Media',/(media|iptv|stream|video|channel)/],
-    ['Auth',/(auth|login|jwt|session)/]
+function detectModules(readmeText, fileListText) {
+  const text = (readmeText || '') + '\n' + (fileListText || '');
+  const t = text.toLowerCase();
+  const modules = new Set();
+
+  const tests = [
+    {name:'Hotel Management', re:/\b(hotel|room|booking|check[- ]?in|check[- ]?out|reservation|guest)\b/},
+    {name:'Restaurant POS', re:/\b(pos|restaurant|order|menu|table|waiter|kitchen|dining)\b/},
+    {name:'Inventory', re:/\b(inventory|stock|reorder|warehouse|stockout|lot|batch)\b/},
+    {name:'Accounting', re:/\b(invoice|billing|accounting|tax|ledger|transaction|payment)\b/},
+    {name:'CRM', re:/\b(customer|client|crm|contact|lead|loyalty)\b/},
+    {name:'Media', re:/\b(iptv|media|channel|stream|video|playlist|on ?demand)\b/},
+    {name:'Fintech', re:/\b(wallet|bank|card|stripe|paypal|transfer|money)\b/},
+    {name:'Analytics', re:/\b(analytics|report|dashboard|kpi|insight|forecast)\b/},
+    {name:'Auth', re:/\b(auth|login|oauth|jwt|session|sso)\b/},
+    {name:'Testing/CI', re:/\b(ci|github actions|workflow|test|jest|phpunit|pytest)\b/}
   ];
-  for(const [name,re] of patterns) if(re.test(text)) modules.add(name);
 
-  if(pkgJson?.dependencies){
-    const deps=Object.keys(pkgJson.dependencies);
-    for(const dep of deps){
-      if(/react|vue|next|angular/.test(dep)) modules.add('Frontend');
-      if(/express|fastify|nestjs|koa/.test(dep)) modules.add('Backend API');
-      if(/sequelize|typeorm|mongoose|mysql|pg|sqlite/.test(dep)) modules.add('Database');
-      if(/firebase|supabase|aws|gcp/.test(dep)) modules.add('Cloud Integration');
-      if(/chart|plotly|d3|echarts/.test(dep)) modules.add('Analytics');
+  tests.forEach(tst=>{
+    if (tst.re.test(t)) modules.add(tst.name);
+  });
+
+  // also inspect file paths for specific folders
+  if (fileListText) {
+    const lines = fileListText.split(/\r?\n/);
+    for (const l of lines) {
+      const s = l.toLowerCase();
+      if (s.includes('room') || s.includes('reservation')) modules.add('Hotel Management');
+      if (s.includes('menu') || s.includes('order')) modules.add('Restaurant POS');
+      if (s.includes('inventory') || s.includes('stock')) modules.add('Inventory');
+      if (s.includes('billing') || s.includes('invoice')) modules.add('Accounting');
+      if (s.includes('iptv') || s.includes('media')) modules.add('Media');
     }
   }
+
   return Array.from(modules);
 }
 
-function makeSchema(modules){
-  const now=new Date().toISOString();
-  const base={
-    version:'1.1',
-    domain:'kgh.allyelvis',
-    modules:{},
-    generated_at:now
+function makeSchema(modulesDetected) {
+  const now = new Date().toISOString();
+  const schema = {
+    version: "1.0",
+    domain: "kgh.allyelvis",
+    modules: {},
+    analyzed_at: now
   };
-  for(const m of modules){
-    base.modules[m]={entities:{Generic:{description:`Auto entity for ${m}`,fields:{
-      id:{type:'string',format:'uuid'},
-      name:{type:'string'},
-      created_at:{type:'string',format:'date-time'}
-    }}}};
+
+  // entity templates per module (simple but following schema)
+  const templates = {
+    "Hotel Management": {
+      "Room": {
+        "description": "Room model",
+        "fields": {
+          "id": {"type":"string","format":"uuid"},
+          "hotel_id":{"type":"string","format":"uuid"},
+          "room_number":{"type":"string"},
+          "room_type":{"type":"string","enum":["Standard","Deluxe","Suite"]},
+          "price":{"type":"number"},
+          "amenities":{"type":"array","items":{"type":"string"}},
+          "status":{"type":"string","enum":["Available","Occupied","Maintenance"]}
+        },
+        "ml_relations": {
+          "occupancy_forecast":"forecast occupancy and detect capacity gaps",
+          "room_feature_gap_detector":"detect missing room features requested by director"
+        }
+      },
+      "Reservation": {
+        "description":"Reservation model",
+        "fields": {
+          "id":{"type":"string","format":"uuid"},
+          "guest_id":{"type":"string","format":"uuid"},
+          "room_id":{"type":"string","format":"uuid"},
+          "check_in":{"type":"string","format":"date-time"},
+          "check_out":{"type":"string","format":"date-time"},
+          "status":{"type":"string","enum":["Booked","CheckedIn","CheckedOut","Cancelled"]},
+          "payment_status":{"type":"string","enum":["Paid","Unpaid","Refunded"]}
+        },
+        "ml_relations": {
+          "cancellation_risk":"predict probability of cancellation to recommend actions",
+          "upsell_recommender":"suggest upgrades and ancillary modules to implement"
+        }
+      }
+    },
+    "Restaurant POS": {
+      "MenuItem": {
+        "description":"Menu item",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "name":{"type":"string"},
+          "category":{"type":"string"},
+          "price":{"type":"number"},
+          "ingredients":{"type":"array","items":{"type":"string"}},
+          "availability":{"type":"boolean"}
+        },
+        "ml_relations":{
+          "demand_forecast":"forecast item demand and detect inventory gaps",
+          "menu_gap_detector":"detect missing categories or dietary-support modules"
+        }
+      },
+      "Order": {
+        "description":"Order model",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "restaurant_id":{"type":"string","format":"uuid"},
+          "table_number":{"type":"string"},
+          "items":{"type":"array","items":{"$ref":"#/$defs/MenuItem"}}, 
+          "total_amount":{"type":"number"},
+          "status":{"type":"string","enum":["New","Preparing","Served","Paid","Cancelled"]},
+          "timestamp":{"type":"string","format":"date-time"}
+        },
+        "ml_relations":{
+          "prep_time_predict":"predict prep time and detect process bottlenecks",
+          "feature_request_detector":"extract director/committer requests from order-related commits"
+        }
+      }
+    },
+    "Inventory": {
+      "Inventory": {
+        "description":"Inventory items & stock",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "menu_item_id":{"type":"string","format":"uuid"},
+          "stock_qty":{"type":"integer"},
+          "unit":{"type":"string"},
+          "reorder_threshold":{"type":"integer"}
+        },
+        "ml_relations":{
+          "stockout_risk":"predict stockouts and detect need for automated reordering",
+          "inventory_module_detector":"recommend inventory submodules (batch, lot tracking)"
+        }
+      }
+    },
+    "Accounting": {
+      "Transaction": {
+        "description":"Financial transactions",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "business_unit_id":{"type":"string","format":"uuid"},
+          "amount":{"type":"number"},
+          "type":{"type":"string","enum":["Revenue","Expense","Refund"]},
+          "timestamp":{"type":"string","format":"date-time"},
+          "category":{"type":"string"},
+          "description":{"type":"string"}
+        },
+        "ml_relations":{
+          "anomaly_detection":"flag suspicious transactions and raise module requirement for audits",
+          "cashflow_forecast":"predict cashflow gaps and recommend financial modules"
+        }
+      }
+    },
+    "CRM": {
+      "GuestProfile": {
+        "description":"Client/guest profiles",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "name":{"type":"string"},
+          "contact":{"type":"string"},
+          "preferences":{"type":"object","additionalProperties":true},
+          "stay_history":{"type":"array","items":{"type":"object"}}
+        },
+        "ml_relations":{
+          "preference_inference":"infer missing services/modules (e.g., airport pickup)",
+          "loyalty_opportunity_detector":"detect opportunities for loyalty module"
+        }
+      }
+    },
+    "Media": {
+      "MediaChannel": {
+        "description":"IPTV / media channel",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "name":{"type":"string"},
+          "type":{"type":"string","enum":["Live","OnDemand"]},
+          "url":{"type":"string","format":"uri"}
+        },
+        "ml_relations":{
+          "viewership_forecast":"forecast viewership to detect content & bandwidth needs",
+          "content_gap_detector":"detect missing content types requested by guests/director"
+        }
+      }
+    },
+    "Fintech": {
+      "Account": {
+        "description":"Payments & wallets",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "business_unit_id":{"type":"string","format":"uuid"},
+          "name":{"type":"string"},
+          "balance":{"type":"number"},
+          "currency":{"type":"string"}
+        },
+        "ml_relations":{
+          "balance_trend":"forecast balance trends; suggest billing integrations",
+          "billing_module_detector":"detect missing billing/payment gateway modules"
+        }
+      }
+    },
+    "Analytics": {
+      "Insight": {
+        "description":"Analytics / insights",
+        "fields":{
+          "id":{"type":"string","format":"uuid"},
+          "module":{"type":"string"},
+          "metric_name":{"type":"string"},
+          "value":{"type":"number"},
+          "timestamp":{"type":"string","format":"date-time"},
+          "recommendation":{"type":"string"}
+        },
+        "ml_relations":{
+          "module_detection":"predict which module is missing or required",
+          "requirement_extraction":"Extract feature requests from README, commits, and issues",
+          "priority_scoring":"Assign priority and confidence for each recommended module",
+          "task_generation":"Auto-generate actionable tasks (title, description, files/skeletons to create)"
+        }
+      }
+    }
+  };
+
+  for (const m of modulesDetected) {
+    if (templates[m]) {
+      schema.modules[m] = { entities: templates[m] };
+    } else {
+      // fallback minimal entity
+      schema.modules[m] = {
+        entities: {
+          "AutoGeneratedEntity": {
+            description: `Auto entity for ${m}`,
+            fields: {
+              id: { type: "string", format: "uuid" },
+              name: { type: "string" },
+              created_at: { type: "string", format: "date-time" }
+            },
+            ml_relations: { related_to: "Insight" }
+          }
+        }
+      };
+    }
   }
-  return base;
+
+  // always include analytics_ai module that contains module_detection insight
+  if (!schema.modules['Analytics']) {
+    schema.modules['Analytics'] = { entities: templates['Analytics'] };
+  }
+
+  return schema;
 }
 
-document.getElementById('btnGenerate').onclick=()=>{
-  let pkg={};
-  try{pkg=JSON.parse(document.getElementById('txtPackage').value||'{}');}catch{}
-  const modules=detectModules(
-    document.getElementById('txtReadme').value,
-    document.getElementById('txtFileList').value,
-    pkg
-  );
-  const schema=makeSchema(modules.length?modules:['Core']);
-  document.getElementById('out').textContent=JSON.stringify(schema,null,2);
-  window.generatedSchema=schema;
-  document.getElementById('btnDownload').disabled=false;
-};
+function downloadJSON(obj, filename='ml_mcp_schema.json') {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
 
-document.getElementById('btnDownload').onclick=()=>{
-  const blob=new Blob([JSON.stringify(window.generatedSchema,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='ml_mcp_schema.json';
-  a.click();
-};
+btnGenerate.addEventListener('click', ()=>{
+  const readmeText = txtReadme.value || '';
+  const fileListText = txtFileList.value || '';
+  const modules = detectModules(readmeText, fileListText);
+  if (modules.length === 0) {
+    if (!confirm('No modules detected automatically. Proceed to generate an empty template?')) return;
+  }
+  const schema = makeSchema(modules.length ? modules : ['Core']);
+  out.textContent = JSON.stringify(schema, null, 2);
+  btnDownload.disabled = false;
+  btnCopy.disabled = false;
+  // store in window for download/push
+  window.__generatedSchema = schema;
+});
+
+btnDownload.addEventListener('click', ()=>{
+  if (!window.__generatedSchema) return alert('No schema generated yet');
+  downloadJSON(window.__generatedSchema, ghTargetPath.value || 'ml_mcp_schema.json');
+});
+
+btnCopy.addEventListener('click', ()=>{
+  if (!window.__generatedSchema) return alert('No schema generated yet');
+  navigator.clipboard.writeText(JSON.stringify(window.__generatedSchema, null, 2)).then(()=>{
+    alert('Copied JSON to clipboard');
+  }).catch(e=>alert('Copy failed: '+e));
+});
+
+btnPush.addEventListener('click', async ()=>{
+  if (!window.__generatedSchema) return alert('Generate schema first');
+  const token = ghToken.value.trim();
+  const repo = ghRepo.value.trim();
+  const targetPath = ghTargetPath.value.trim() || 'ml_mcp_schema.json';
+  if (!token || !repo || !repo.includes('/')) {
+    return alert('Provide GitHub token and owner/repo (e.g. allyelvis/Kgh) to push.');
+  }
+
+  // Steps: get default branch and current SHA for path (to update) - we will create or update a file using the Contents API
+  try {
+    btnPush.disabled = true; btnPush.textContent = 'Pushing...';
+    const apiBase = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(targetPath)}`;
+    const getRes = await fetch(apiBase, {
+      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
+    });
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(window.__generatedSchema, null, 2))));
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      // update file
+      const updateRes = await fetch(apiBase, {
+        method: 'PUT',
+        headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' },
+        body: JSON.stringify({
+          message: '🤖 Auto-generated ML MCP Servers Schema',
+          content: content,
+          sha: existing.sha
+        })
+      });
+      if (updateRes.ok) {
+        alert('Updated file in repo successfully.');
+      } else {
+        const txt = await updateRes.text();
+        alert('Failed to update file: ' + txt);
+      }
+    } else {
+      // create file
+      const createRes = await fetch(apiBase, {
+        method: 'PUT',
+        headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' },
+        body: JSON.stringify({
+          message: '🤖 Auto-generated ML MCP Servers Schema',
+          content: content
+        })
+      });
+      if (createRes.ok) {
+        alert('Created file in repo successfully.');
+      } else {
+        const txt = await createRes.text();
+        alert('Failed to create file: ' + txt);
+      }
+    }
+  } catch (e) {
+    alert('Push failed: ' + e.message);
+  } finally {
+    btnPush.disabled = false; btnPush.textContent = 'Push to GitHub (optional)';
+  }
+});
+
+// drag-n-drop support for README area
+['dragenter','dragover','dragleave','drop'].forEach(ev=>{
+  txtReadme.addEventListener(ev, e=>e.preventDefault());
+});
+txtReadme.addEventListener('drop', async (e)=>{
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) {
+    const txt = await f.text();
+    txtReadme.value = txt;
+  }
+});
+
 </script>
 </body>
 </html>
